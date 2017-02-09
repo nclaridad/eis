@@ -15,4 +15,9 @@
 //     return view('welcome');
 // });
 
-Route::get('/','LoginController@login');
+Route::get('/','HomeController@index');
+
+// Authentication
+Auth::routes();
+
+Route::get('/home', 'HomeController@index');
