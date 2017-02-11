@@ -21,3 +21,7 @@ Route::get('/','HomeController@index');
 Auth::routes();
 
 Route::get('/home', 'HomeController@index');
+//Employee's Route
+Route::get('/employees', 'EmployeesController@index');
+Route::post('/getEmployees', 'EmployeesController@getEmployees');
+Route::get('/addEmployee', 'EmployeesController@add');

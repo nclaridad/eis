@@ -22,7 +22,7 @@
     <link rel="stylesheet" href="<?php echo e(URL::asset('css/unicorn.grey.css')); ?>" class="skin-color"/>
 
     <script src="<?php echo e(URL::asset('js/jquery.min.js')); ?>"></script>
-    <script src="<?php echo e(URL::asset('js/jquery-ui.custom.min.min.js')); ?>"></script>
+    <script src="<?php echo e(URL::asset('js/jquery-ui.custom.min.js')); ?>"></script>
     <!-- Scripts -->
     <script>
         window.Laravel = <?php echo json_encode([
@@ -53,13 +53,19 @@
                     <li class="" title=""><a class="sAdd" title="" href=""></a></li>                
                 </ul>
             </li>
-            <li class="btn btn-inverse dropdown" id="menu-messages"><a href="#" data-toggle="dropdown" data-target="#menu-messages" class="dropdown-toggle"><i class="icon icon-envelope"></i> <span class="text">Messages</span> <span class="label label-important">5</span> <b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                    <li><a class="sAdd" title="" href="#">new message</a></li>
-                    <li><a class="sInbox" title="" href="#">inbox</a></li>
-                    <li><a class="sOutbox" title="" href="#">outbox</a></li>
-                    <li><a class="sTrash" title="" href="#">trash</a></li>
-                </ul>
+            <li class="btn btn-inverse dropdown" id="menu-messages">
+                <a href="#" data-toggle="dropdown" data-target="#menu-messages" class="dropdown-toggle">
+                    <i class="icon icon-envelope"></i> 
+                        <span class="text">Messages</span>
+                     <span class="label label-important">5</span> 
+                    <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="sAdd" title="" href="#">new message</a></li>
+                        <li><a class="sInbox" title="" href="#">inbox</a></li>
+                        <li><a class="sOutbox" title="" href="#">outbox</a></li>
+                        <li><a class="sTrash" title="" href="#">trash</a></li>
+                    </ul>
             </li>        
             <li class="btn btn-inverse dropdown" id="menu-settings"><a href="#" data-toggle="dropdown" data-target="#menu-settings" class="dropdown-toggle"><i class="icon icon-cog"></i> <span class="text">My Settings</span> <b class="caret"></b></a>
                 <ul class="dropdown-menu">
@@ -81,7 +87,7 @@
     <div id="sidebar">
         <a href="javascription:void(0)" class="visible-phone"><i class="icon icon-home"></i> Dashboard</a>
         <ul>
-            <li class="active" ><a href="">
+            <li class="active" ><a href="<?php echo e(url('/employees')); ?>">
             <i class="icon icon-file"></i> <span>Employees</span> 
             <ul>
                 <li><a href="<?php echo e(url('/employees')); ?>"> Employees </a></li>
@@ -102,7 +108,11 @@
     <script src="<?php echo e(URL::asset('js/bootstrap.min.js')); ?>"></script>
     <script src="<?php echo e(URL::asset('js/jquery.uniform.js')); ?>"></script>
     <script src="<?php echo e(URL::asset('js/select2.min.js')); ?>"></script>
-    <script src="<?php echo e(URL::asset('js/unicorn.tables.js')); ?>"></script>
-    <script src="<?php echo e(URL::asset('js/unicorn.form_validation.js')); ?>"></script>
+    <!--script src="<?php echo e(URL::asset('js/unicorn.tables.js')); ?>"></script -->
+    <script src="<?php echo e(URL::asset('js/datatables/jquery.dataTables.min.js')); ?>"></script>
+    <!--script src="<?php echo e(URL::asset('js/datatables/dataTables.colVis.min.js')); ?>"></script>
+    <script src="<?php echo e(URL::asset('js/datatables/dataTables.tableTools.min.js')); ?>"></script>
+    <script src="<?php echo e(URL::asset('js/datatables/dataTables.bootstrap.min.js')); ?>"></script>
+    <script src="<?php echo e(URL::asset('js/datatable-responsive/datatables.responsive.min.js')); ?>"></script -->          
 </body>
 </html>
