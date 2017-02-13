@@ -1,11 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use Illuminate\Http\Request;
 use App\Models\Data;
-
+use App\Repositories\EmployeesRepository;
 use Illuminate\Support\Facades\Input;
+use App\Http\Requests\EmployeeRequest;
 
 class EmployeesController extends Controller
 {
@@ -33,9 +33,17 @@ class EmployeesController extends Controller
     );
 
     var $order = array('id' => 'desc'); 
+    
+    /**
+     * The EmployeesRepository instance.
+     *
+     * @var \App\Repositories\EmmployeesRepository
+     */
+    protected $employeeRepository;
 
-    public function __construct()
+    public function __construct(EmployeesRepository $employeeRepository)
     {
+        $this->employeeRepository = $employeeRepository;
         $this->middleware('auth');
     }
 
@@ -58,12 +66,12 @@ class EmployeesController extends Controller
 
         $no     = $request->input('start');
         $length = $request->input('length');
-        $search = $request->input('search');//$_POST['search']['value']
+        $search = $request->input('search');
+        $order  = $request->input('order');
+
         //$where = array('status' => 1);
         //echo $search['value'];
         $searchClause = '';
-
-
         //Check the search value
         if(!empty($search['value']))
         {
@@ -80,18 +88,33 @@ class EmployeesController extends Controller
             }
         }
 
+        $orderClause = array();
+        if(!empty($order)) // here order processing
+        {
+            $orderClause = array('orderField' => $this->column_order[$order[0]['column']], 'orderType' => $order[0]['dir']);
+            //$this->db->order_by($this->column_order[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
+        } 
+        else if(isset($this->order))
+        {
+            $order = $this->order;
+            //$this->db->order_by(key($order), $order[key($order)]);
+            $orderClause = array('orderField' => key($order), 'orderType' => $order[key($order)]);
+        }
+
         if(!empty($searchClause))
         {
             // $data = Data::where($searchClause)
             $data = Data::whereRaw($searchClause)
-                ->take($length)->skip($no)->get();
+                ->orderBy($orderClause['orderField'], $orderClause['orderType'])
+                ->take($length)->skip($no)->get(); //orderBy('name', 'desc') 
         }
         else
         {
-            $data = Data::take($length)->skip($no)->get();
+            $data = Data::take($length)
+            ->orderBy($orderClause['orderField'], $orderClause['orderType'])
+            ->skip($no)->get();
         }
         
-        // $data = Data::where("status", "=", "1")->take($length)->skip($no)->get();
         $employee = array();
         foreach ($data as $emp) {
             $no++;
@@ -118,7 +141,7 @@ class EmployeesController extends Controller
                             <button data-toggle="dropdown" class="btn btn-info btn-mini dropdown-toggle">
                             <span class="caret"></span></button>
                             <ul class="dropdown-menu">
-                                <li><a href="/employee/'. $emp->id .'">Edit</a></li>
+                                <li><a href="/editEmployee/'. $emp->id .'">Edit</a></li>
                                 <li><a href="javascript:void(0)" onclick="deleteRecord('.$emp->id.', \'' . $emp->first_name ." " . $emp->last_name .'\')">Delete</a></li>
                             </ul>
                         </div>
@@ -141,5 +164,44 @@ class EmployeesController extends Controller
     public function add()
     {
         return view('employees.add');
+    }
+
+    public function processAdd(EmployeeRequest $request)
+    {
+        $id = $this->employeeRepository->store($request->all());
+
+        return redirect('employees'); //->with('ok', trans('back/users.created'));    
+    }
+
+    /**
+     * Show the form for editing the specified post.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        $data = array();
+        $result = $this->employeeRepository->getById($id);
+        $data['employee'] = $result;
+        return view('employees.edit', $data);    
+    }
+
+    public function processUpdate(EmployeeRequest $request)
+    {
+        $this->employeeRepository->updateEmployee($request->all());
+        return redirect('editEmployee/'. $request->id);
+    }
+
+    public function deleteRecord(Request $request)
+    {
+        $emp = Data::find($request->id);        
+        $data = array('code' => 1, 'message' => 'Failed to delete record');        
+        if($emp)
+        {
+            $emp->delete();
+            $data = array('code' => 0, 'message' => 'Successfully deleted.');
+        }
+        return response ()->json ( $data );
     }
 }

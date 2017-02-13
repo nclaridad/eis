@@ -25,3 +25,7 @@ Route::get('/home', 'HomeController@index');
 Route::get('/employees', 'EmployeesController@index');
 Route::post('/getEmployees', 'EmployeesController@getEmployees');
 Route::get('/addEmployee', 'EmployeesController@add');
+Route::post('/processAdd', 'EmployeesController@processAdd');
+Route::get('/editEmployee/{id}', 'EmployeesController@edit');
+Route::post('/processUpdate', 'EmployeesController@processUpdate');
+Route::post('/deleteRecord', 'EmployeesController@deleteRecord');

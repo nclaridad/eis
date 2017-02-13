@@ -51,14 +51,13 @@
         table = $('#employee').DataTable({ 
            "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-12 hidden-xs'l>r>"+
                 "t"+
-                "<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-xs-12 col-sm-6'p>>",
+                "<'fg-toolbar ui-toolbar ui-widget-header ui-corner-bl ui-corner-br ui-helper-clearfix'<'col-sm-6 col-xs-12 hidden-xs'i><'col-xs-12 col-sm-6 dataTables_paginate fg-buttonset ui-buttonset fg-buttonset-multi ui-buttonset-multi'p>>",
             "scrollX": true,
             "autoWidth" : true,
             "oLanguage": {
-                "sSearch": '<span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>'
-                
+                "sSearch": '<span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>'                
             },
-        
+            "sPaginationType": "full_numbers", 
             "processing": true, //Feature control the processing indicator.
             "serverSide": true, //Feature control DataTables' server-side processing mode.
             "order": [], //Initial no order.
@@ -109,15 +108,62 @@
                             '_token': $('input[name=_token]').val()
                       } );
                 }
-            },                   
-     
+            }         
+        
         });
 
         //Trigger design for search
         $(".dt-toolbar").css("height", "40px");
+
     });
+
+    function deleteRecord(empId, name){
+        if(confirm("Are you sure you want to delete " + name + "." )){
+            $.ajax(          
+            {
+                type    : "POST",
+                url     : "{{ url('deleteRecord') }}",
+                timeout : (300*1000),
+                data    :{
+                    id      : empId,
+                    _token  : $('input[name=_token]').val()
+                },
+                success : function(res_data)
+                {
+                    var json = $.parseJSON(res_data);
+                    
+                    // if(json.length > 0){
+                    // }
+
+                    $('#employee').DataTable().ajax.reload(); 
+                },
+                error:function(objAJAXRequest, strError)
+                {
+                    //_overlay("hide");
+                    //jAlert("error", '['+ 'INV0002' + '] ' + 'Internal error. Please contact administrator.', "System error");
+                    //alert('Internal error. Please contact administrator.');
+                }
+            })
+        }
+    }
+
 </script>
 <style type="text/css">
     th.dt-center, td.dt-center { text-align: center; }
+    .dataTables_filter { margin: 4px 8px 2px 2px; }
+    .col-sm-6 { width: 45%; position: relative; min-height: 1px; padding-left: 13px; float:left;}
+    .dataTables_paginate .paginate_button, .pagination.alternate li a {
+        font-size: 12px;
+        padding: 4px 10px !important;
+        border-style: solid;
+        border-width: 1px;
+        border-color: #dddddd #dddddd #cccccc;
+        border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+        display: inline-block;
+        line-height: 16px;
+        cursor: pointer;
+    }
+    /*.dataTables_paginate span .ui-state-disabled, .pagination.alternate li.active a*/
+    a.paginate_button.current { background-color: #414141 !important; color: #ffffff !important; text-shadow: 0 1px 0 #ffffff; }
 </style>
 @endsection
